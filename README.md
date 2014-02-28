@@ -1,4 +1,4 @@
-animated-robot
+batch-scripts
 ==============
 
 Collection of batch scripts
