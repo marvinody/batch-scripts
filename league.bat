@@ -90,17 +90,43 @@ if "%CH%"=="0" goto quit
 if "%CH%"=="1" goto uninstall
 if "%CH%"=="2" goto langchange
 
+echo Finding League Folder
+chdir /d "C:\Riot Games\League of Legends\RADS"
+
 :uninstall
+::find correct dir
+::look for .bak file
+chdir projects\lol_game_client_%cLANG%\managedfiles
+FOR /F %%i IN ('dir /b /ad-h /o-d') DO (
+    SET a1=%%i
+    GOTO found0
+)
+goto quit
+:found0
+chdir %a1%\DATA\Sounds\FMOD
+::now look for files
+if exist VOBank_%cfLang%.bak (
+	echo .bak file exists
+	if exist VOBank_%cfLang%.fsb (
+	    del VOBank_%cfLang%.fsb
+	    echo Old Voice Deleted
+	    rename VOBank_%cfLang%.bak VOBank_%cfLang%.fsb
+	    echo Renamed!
+	)
+) else (
+	echo .bak file does not exist
+	echo Maybe you put wrong native language or
+	echo Something else happened
+)
+:goto quit
 
 
-::goto quit
+
 :langchange  
 
 ::current language
-echo Finding League Folder
-chdir /d "C:\Riot Games\League of Legends\RADS\system"
 echo Writing new locale lang...
-echo locale=%LANG% > locale.cfg
+echo locale=%LANG% > system\locale.cfg
 echo Opening League...
 chdir ..\..\
 
@@ -109,7 +135,7 @@ ping 127.0.0.1 -n 2 > nul
 lol.launcher.exe
 echo Close the launcher once it finishes and click enter to continue after
 pause > NUL
-echo Changing Dir to new DLed Language
+echo Changing Directory to new DLed Language
 chdir RADS\projects\lol_game_client_%LANG%\managedfiles
 ping 127.0.0.1 -n 2 > nul
 
