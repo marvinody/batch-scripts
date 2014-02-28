@@ -78,20 +78,20 @@ if not defined cLANG (
   echo.
   goto choice
   )
-  
+echo Finding League Folder
+chdir /d "C:\Riot Games\League of Legends\RADS"  
 
-echo .
+echo.
 echo 1) Uninstall
 echo 2) Change Voice
-echo .
+echo.
 echo If you want to change from a non-native voice to a non-native voice, please uninstall first.
 set /P CH=[1-2]:
 if "%CH%"=="0" goto quit
 if "%CH%"=="1" goto uninstall
 if "%CH%"=="2" goto langchange
 
-echo Finding League Folder
-chdir /d "C:\Riot Games\League of Legends\RADS"
+
 
 :uninstall
 ::find correct dir
@@ -118,7 +118,7 @@ if exist VOBank_%cfLang%.bak (
 	echo Maybe you put wrong native language or
 	echo Something else happened
 )
-:goto quit
+goto quit
 
 
 
@@ -128,7 +128,7 @@ if exist VOBank_%cfLang%.bak (
 echo Writing new locale lang...
 echo locale=%LANG% > system\locale.cfg
 echo Opening League...
-chdir ..\..\
+chdir ..\
 
 ping 127.0.0.1 -n 2 > nul
 
