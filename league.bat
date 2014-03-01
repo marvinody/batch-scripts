@@ -1,4 +1,14 @@
 @echo off
+set LOLDIR="C:\Riot Games\League of Legends"
+::no trailing slash (\) please!
+set CH=
+set LANG=
+::string for locale and folder
+set fLANG=
+::string for file
+set cLANG=
+set cfLANG=
+set lang_dir=
 echo ***************************************
 echo *                                     *
 echo *   Marvinody's League Audio Changer  *
@@ -8,6 +18,8 @@ echo This assumes your LoL directory is at
 echo "C:\Riot Games\League of Legends\"
 echo Press enter to continue or 
 echo exit now if the folder is elsewhere
+echo and edit the first line to match your
+echo installation folder
 echo.
 echo.
 echo If you want to uninstall please select 
@@ -79,20 +91,19 @@ if not defined cLANG (
   goto choice
   )
 echo Finding League Folder
-chdir /d "C:\Riot Games\League of Legends\RADS"  
+chdir /d %LOLDIR%\RADS  
 
 echo.
-echo 1) Uninstall
-echo 2) Change Voice
+echo 1) Change Voice
+echo 2) Uninstall
 echo.
-echo If you want to change from a non-native voice to a non-native voice, please uninstall first.
+echo If you want to change from a non-native voice to a non-native voice,
+echo please uninstall first.
+set CH=1
 set /P CH=[1-2]:
 if "%CH%"=="0" goto quit
-if "%CH%"=="1" goto uninstall
-if "%CH%"=="2" goto langchange
-
-
-
+if "%CH%"=="1" goto langchange
+if "%CH%"=="2" goto uninstall
 :uninstall
 ::find correct dir
 ::look for .bak file
@@ -175,7 +186,7 @@ echo Moving new voice file
 
 copy ..\..\..\..\..\..\lol_game_client_%LANG%\managedfiles\%a1%\DATA\Sounds\FMOD\VOBank_%fLANG%.fsb VOBank_%cfLang%.fsb
 
-chdir /d "C:\Riot Games\League of Legends\RADS\system"
+chdir /d %LOLDIR%\RADS\system
 echo Rewriting locale file back to native
 ping 127.0.0.1 -n 2 > nul
 echo locale=%cLANG% > locale.cfg
