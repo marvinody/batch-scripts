@@ -100,7 +100,9 @@ echo.
 echo If you want to change from a non-native voice to a non-native voice,
 echo please uninstall first.
 set CH=1
-set /P CH=[1-2]:
+
+echo Hit a number [0-2] and press enter.
+set /P CH=[0-2]:
 if "%CH%"=="0" goto quit
 if "%CH%"=="1" goto langchange
 if "%CH%"=="2" goto uninstall
@@ -125,10 +127,29 @@ if exist VOBank_%cfLang%.bak (
 	    echo Renamed!
 	)
 ) else (
-	echo .bak file does not exist
+	echo .bak file does not exist for GameLang
 	echo Maybe you put wrong native language or
 	echo Something else happened
 )
+chdir /d %LOLDIR%\RADS\projects\lol_air_client\releases\
+FOR /F %%i IN ('dir /b /ad-h /o-d') DO (
+    SET a1=%%i
+    GOTO found4
+)
+goto quit
+::above is executed if no file is found
+:found4
+chdir %a1%\deploy\assets\sounds
+if not exist %cLang%bak (
+	echo Can't find backup for AirClient
+	echo not touching anything!
+) else (
+	rename %cfLang% %fLang%
+	rename %cfLang%bak %cfLang%
+	
+)
+
+
 goto quit
 
 
@@ -190,6 +211,29 @@ chdir /d %LOLDIR%\RADS\system
 echo Rewriting locale file back to native
 ping 127.0.0.1 -n 2 > nul
 echo locale=%cLANG% > locale.cfg
+echo Looking for AirClient folder
+chdir /d %LOLDIR%\RADS\projects\lol_air_client\releases\
+FOR /F %%i IN ('dir /b /ad-h /o-d') DO (
+    SET a1=%%i
+    GOTO found3
+)
+goto quit
+::above is executed if no file is found
+:found3
+
+chdir %a1%\deploy\assets\sounds
+if not exist %cLang%bak (
+	echo Renaming %cfLang% to %cfLang%bak
+	echo Renaming %fLang% to %cfLang%
+	rename %cfLang% %cfLang%bak
+	rename %fLang% %cfLang%
+) else (
+	echo Found backup for AirClient language
+	echo not touching it!
+)
+
 :quit
+echo Succesful, hopefully
 echo Exiting...
-ping 127.0.0.1 -n 2 > nul
+echo in 5 seconds
+ping 127.0.0.1 -n 5 > nul
